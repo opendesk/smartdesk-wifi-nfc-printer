@@ -41,10 +41,9 @@ void setup() {
   
   // Initialize Printer
   printer.begin();
-  printer.setSize('M');
+  printer.setSize('L');
   printer.println("I am Configured");
   printer.feed(2);
-  printer.justify('C');
   printer.printBitmap(med_logo_width, med_logo_height, med_logo_data);
   
   printer.feed(5);
@@ -54,11 +53,9 @@ void setup() {
 }
 
 void printerPrint(char* print_buffer) {
-  printer.setSize('M');
-  printer.justify('C');
   printer.printBitmap(med_logo_width, med_logo_height, med_logo_data);
   printer.feed(2);
-  printer.justify('L');
+  printer.setSize('M');
   printer.println(print_buffer);
   printer.feed(5);
   delay(2000);
@@ -72,7 +69,7 @@ String hex2char(const byte * data, const uint32_t numBytes)
   for (szPos=0; szPos < numBytes; szPos++) 
   {
     if (data[szPos] <= 0x1F)
-      result = result + String(".");
+      result = result + String("");
     else
       result = result + String((char)data[szPos]);
   }
@@ -133,8 +130,8 @@ void checkRegularCard() {
           tmp.getPayload(storage);
           String respBuffer;
           respBuffer = hex2char(storage, record_length);
-          char charBuf[50];
-          respBuffer.toCharArray(charBuf, 50);
+          char charBuf[100];
+          respBuffer.toCharArray(charBuf, 100);
           printerPrint(charBuf);
         }
         
