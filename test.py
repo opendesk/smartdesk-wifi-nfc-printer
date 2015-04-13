@@ -14,7 +14,7 @@ def main():
                     for k,v in json_data.items():
                         url = 'http://localhost/mailbox/{0}'.format(''.join(v.split(',')[0]).split(':')[-1].replace('"','').replace(' ','%20'))
                         requests.post(url)
-            except ValueError:
+            except requests.exceptions.ConnectionError, ValueError:
                 pass
         time.sleep(2)
 
