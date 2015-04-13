@@ -36,6 +36,7 @@ void setup() {
   digitalWrite(13, LOW);
   // Initialize Bridge and Mailbox
   Bridge.begin();
+  Mailbox.begin();
   digitalWrite(13, HIGH);
   
   // Initialize Printer
@@ -47,8 +48,6 @@ void setup() {
   
   printer.feed(5);
   // Init serial
-  Console.begin(); 
-  while (!Console);
   Serial.begin(9600);
   makeNoise();
 }
@@ -78,6 +77,23 @@ String hex2char(const byte * data, const uint32_t numBytes)
   return result;
 }
 
+void checkMailbox() {
+  String message;
+  char charBuf[50];
+  // if there is a message in the Mailbox
+  if (Mailbox.messageAvailable())
+  {
+    makeNoise();
+    // read all the messages present in the queue
+    while (Mailbox.messageAvailable())
+    {
+      Mailbox.readMessage(message);
+      message.toCharArray(charBuf, 50);
+      printerPrint(charBuf);
+    }
+  }
+  return;
+}
 
 void checkforNFC(){
     // nfc.read is a blocking function.. adding timeout
@@ -124,32 +140,8 @@ void checkRegularCard() {
     return;
 }
 
-
-String read_proxy_response()
-{
-  String response = "";
-
-  while(Console.available()>0) {
-    char c = Console.read();
-    response += c;
-  }
-  return response;
-}
-
-
-void checkWifi()
-{
-  String response = read_proxy_response();
-  char charBuf[50];
-  if (response.length() > 0)
-  {
-    response.toCharArray(charBuf, 50);
-    printerPrint(charBuf);
-  }
-}
-
 void loop() {
   checkforNFC();
-  checkWifi();
+  checkMailbox();
   checkRegularCard();
 }
