@@ -4,4 +4,4 @@
 # run python script from there
 
 cd /root/kennethreitz-requests-a0632d8
-python test.py
+python test.py &
