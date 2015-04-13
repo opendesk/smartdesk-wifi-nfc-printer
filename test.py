@@ -1,5 +1,6 @@
 import requests
 import time
+import urllib
 
 def main():
     current_data = False
@@ -12,9 +13,13 @@ def main():
                 if current_data != json_data:
                     current_data = json_data
                     for k,v in json_data.items():
-                        url = 'http://localhost/mailbox/{0}'.format(''.join(v.split(',')[0]).split(':')[-1].replace('"','').replace(' ','%20'))
+                        encoded_url = urllib.quote_plus(''.join(v.split(',')[0]
+                            ).split(':')[-1].replace('"',''))
+
+                        url = 'http://localhost/mailbox/{0}'.format(encoded_url)
                         requests.post(url)
-            except requests.exceptions.ConnectionError, ValueError:
+
+            except (requests.exceptions.ConnectionError, ValueError):
                 pass
         time.sleep(2)
 
